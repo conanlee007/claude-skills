@@ -83,6 +83,21 @@ description: Use when 用户要招聘、找候选人、people search、根据 JD
 - `requiredFields` 一次拿全(同一次扣费):`email, phone, mobilePhone, employmentHistory, education, externalUrls, contactAccuracyScore, jobTitle, companyName`
 - 用返回的 `employmentHistory` 和 `externalUrls`(含 LinkedIn 链接)与用户在 LinkedIn 看到的履历交叉复核,确认是同一人
 
+## 可选模块 — JD 优化(需 Indeed 官方 MCP)
+
+用户提供 JD 后、或对 JD 是否对路有疑问时执行:
+
+1. **取对标样本**:`search_jobs` 搜同职能+同地区在招岗位,挑 2–3 份相关性高的用 `get_job_details` 取全文
+2. **五维对比诊断**:
+   - 标题关键词:候选人/招聘算法搜的行业标准词(如 MRO、Buyer、Sourcing)是否在标题里
+   - 使命清晰度:岗位存在的真实目的(如降本、替换供应商)是否一句话可见,还是淹没在流程职责里
+   - 职责结构:按职能分组 vs 流水账;核心职责是否排在最前
+   - 技能信号:必备/加分项是否与真实使命一致,有无缺失的关键经验要求
+   - 薪资福利:结合在招竞品岗位判断竞争力
+3. **输出**:错位诊断表 + 具体修改建议;经用户确认后产出修订版(docx 用 redline 修订格式)
+
+**关键原则**:JD 的职称关键词与 Step 1 搜索候选人的 `jobTitle` 同义词表必须一致——JD 改了标题/关键词,ZoomInfo 搜索条件要同步更新重搜,否则发布收人和主动搜人两头错位。
+
 ## 可选模块 — Indeed 市场情报(需 Indeed 官方 MCP)
 
 检测环境中是否有 Indeed MCP 工具(`search_jobs` / `get_company_data`,工具名形如 `mcp__<server-id>__search_jobs`)。没有时可引导用户添加(claude.ai:Settings → Connectors → Add custom connector,URL `https://mcp.indeed.com/claude/mcp`;Claude Code:`claude mcp add indeed --transport http https://mcp.indeed.com/claude/mcp`,OAuth 登录 Indeed 账号)。
