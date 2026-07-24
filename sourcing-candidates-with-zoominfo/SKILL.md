@@ -48,6 +48,11 @@ description: Use when 用户要招聘、找候选人、people search、根据 JD
 3. 结果以表格输出:姓名 | 现职 | 公司 | 地点 | 年限 | 准确度分 | personId,并明确告知用户:**此步免费,未消耗任何 credit**
 4. 结果太多 → 建议收紧条件重搜(仍免费);结果为 0 → 逐步放宽条件(先放宽职称,再放宽地区)
 
+**实战校准(真实 API 行为):**
+- `companyName` 是模糊匹配且**不支持 OR 语法**——传 "GXO OR Amazon" 或缩写(如 "UNIS")会匹配到完全无关的公司(University…)。目标公司定向搜必须:先用 `search_companies` 按公司名拿到 `companyId`,再用 `companyId` 搜联系人;拿到结果后核对公司名确实是目标公司
+- 部分过滤字段可能因订阅等级不可用(如 `yearsOfExperience` 报 `Disallowed field`)——报错时移除该字段重搜,把该维度留到 LinkedIn 核实阶段人工把关,并告知用户
+- 搜索结果不返回候选人所在城市,地理条件靠 `zipCode+radius` 过滤保证;具体位置在 enrich 或 LinkedIn 阶段确认
+
 ## Step 3 — LinkedIn 人工核实
 
 把名单交给用户,请其在 LinkedIn 上按"姓名 + 公司"逐个核实过往履历与合适性,回来给出确认名单(报 personId 或姓名)。
