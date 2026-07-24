@@ -83,6 +83,16 @@ description: Use when 用户要招聘、找候选人、people search、根据 JD
 - `requiredFields` 一次拿全(同一次扣费):`email, phone, mobilePhone, employmentHistory, education, externalUrls, contactAccuracyScore, jobTitle, companyName`
 - 用返回的 `employmentHistory` 和 `externalUrls`(含 LinkedIn 链接)与用户在 LinkedIn 看到的履历交叉复核,确认是同一人
 
+## 可选模块 — Indeed 市场情报(需 Indeed 官方 MCP)
+
+检测环境中是否有 Indeed MCP 工具(`search_jobs` / `get_company_data`,工具名形如 `mcp__<server-id>__search_jobs`)。没有时可引导用户添加(claude.ai:Settings → Connectors → Add custom connector,URL `https://mcp.indeed.com/claude/mcp`;Claude Code:`claude mcp add indeed --transport http https://mcp.indeed.com/claude/mcp`,OAuth 登录 Indeed 账号)。
+
+已连接时,在 Step 1 JD 确认后可主动提供两项免费情报:
+1. **薪资竞争力对标**:`search_jobs` 搜同职能+同地区的在招岗位,对比薪资区间,评估 JD 报价在本地市场的位置
+2. **雇主品牌体检**:`get_company_data` 查招聘方自己在 Indeed 的评分、CEO 支持率、评价样本量——候选人投递前必看的页面,发现问题提醒用户维护
+
+**边界**:Indeed 官方 MCP 面向求职者,**不能搜候选人/简历库**(那是 Smart Sourcing 付费订阅,只能经用户登录态浏览器辅助操作)。在 Indeed 获取候选人的正路:发布职位收简历 → 用户导出申请人 CSV → 按 JD 8 项条件自动筛选打分。
+
 ## Credit 规则速查
 
 | 操作 | Credit 消耗 |
